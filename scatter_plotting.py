@@ -43,8 +43,8 @@ def plot_stock(stock_symbol, start_date, end_date):
     latest_price = df['Close'].iloc[-1]
     latest_pct_change = df['Pct_Change'].iloc[-1]
 
-    latest_price = float(latest_price_series.iloc[0])  # Ensure it's a scalar
-    latest_pct_change = float(latest_pct_change_series.iloc[0])
+    latest_price = float(latest_price.iloc[0])  # Ensure it's a scalar
+    latest_pct_change = float(latest_pct_change.iloc[0])
 
     # Get pattern (in a real scenario, you'd get this from your data source)
     pattern = get_pattern(df)
