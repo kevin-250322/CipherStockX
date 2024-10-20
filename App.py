@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Sample stock data
-stocks = [
+stock = [
     {
         "icon": "https://example.com/icon1.png",
         "ticker": "AAPL",
@@ -63,7 +63,7 @@ st.title("Stock Data Cards")
 
 # Create data cards with boxes
 cols = st.columns(3)
-for i, stocks in enumerate(stocks):
+for i, stock in enumerate(stocks):
     with cols[i % 3]:  # Cycle through the columns
         # Create a box for each card
         with st.container():
