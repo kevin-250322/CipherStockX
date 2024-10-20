@@ -11,6 +11,9 @@ def get_pattern(df):
     price_today = df['Close'].iloc[-1]
     price_yesterday = df['Close'].iloc[-2]
 
+    price_today = float(price_today)
+    price_yesterday = float(price_yesterday)
+    
     price_change_percentage = ((price_today - price_yesterday) / price_yesterday) * 100
     print(price_change_percentage)
     # Define the pattern based on price change
