@@ -65,20 +65,13 @@ st.title("Stock Data Cards")
 cols = st.columns(3)
 for i, stock in enumerate(stocks):
     with cols[i % 3]:  # Cycle through the columns
-        # Create a box for each card
-        with st.container():
-            st.markdown(
-                f"""
-                <div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin: 10px; background-color: #f9f9f9;">
-                    <img src="{stock['icon']}" width="50" alt="{stock['name']} logo">
-                    <h5>{stock['ticker']}: {stock['name']}</h5>
-                    <p><strong>Description:</strong> {stock['description']}</p>
-                    <p><strong>Location:</strong> {stock['location']}</p>
-                    <p><strong>Current Value:</strong> {stock['current_value']}</p>
-                    <p><a href="{stock['website']}">Visit Website</a></p>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
+        with st.container():  # Create a container for the card
+            st.markdown("---")  # Horizontal line for separation
+            st.image(stock["icon"], width=50)
+            st.markdown(f"**{stock['ticker']}**: {stock['name']}")
+            st.write(f"**Description**: {stock['description']}")
+            st.write(f"**Location**: {stock['location']}")
+            st.write(f"**Current Value**: {stock['current_value']}")
+            st.markdown(f"[Visit Website]({stock['website']})")
+            st.markdown("---")  # Horizontal line for separation
 
