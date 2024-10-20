@@ -1,7 +1,8 @@
 import streamlit as st
 import yfinance as yf
-
+import datetime as dt
 from scatter_plotting import plot_multiple_stocks 
+
 # List of ticker symbols
 tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
 
