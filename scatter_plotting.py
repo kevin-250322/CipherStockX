@@ -40,8 +40,8 @@ def plot_stock(stock_symbol, start_date, end_date):
     )
 
     # Get latest price and percentage change
-    latest_price = df['Close'].iloc[-1]
-    latest_pct_change = df['Pct_Change'].iloc[-1]
+    latest_price = float(df['Close'].iloc[-1])
+    latest_pct_change = float(df['Pct_Change'].iloc[-1])
 
     # Get pattern (in a real scenario, you'd get this from your data source)
     pattern = get_pattern(df)
