@@ -12,7 +12,7 @@ def get_pattern(df):
     price_yesterday = df['Close'].iloc[-2]
 
     price_change_percentage = ((price_today - price_yesterday) / price_yesterday) * 100
-
+    print(price_change_percentage)
     # Define the pattern based on price change
     if price_change_percentage > 1:  # 1% increase
         return 'Bullish'
