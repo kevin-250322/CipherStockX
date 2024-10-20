@@ -1,7 +1,7 @@
 import streamlit as st
 import yfinance as yf
 
-
+from scatter_plotting import plot_multiple_stocks 
 # List of ticker symbols
 tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
 
@@ -28,4 +28,12 @@ for i, tick in enumerate(tickers):
             st.write(f"**Current Value**: {stockdata.info['previousClose']}")
             st.markdown(f"[Visit Website]({stockdata.info['website']})")
             st.markdown("---")  # Horizontal line for separation
+
+# Set the date range for the graph
+start_date = dt.datetime(2023, 1, 1)
+end_date = dt.datetime.now()
+
+# Generate and display the graph
+fig = plot_multiple_stocks(tickers, start_date, end_date)
+st.plotly_chart(fig)  # Display the Plotly figure in Streamlit
 
