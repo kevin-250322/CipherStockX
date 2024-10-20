@@ -1,7 +1,7 @@
 import streamlit as st
 
 # Sample stock data
-stock = [
+stocks = [
     {
         "icon": "https://example.com/icon1.png",
         "ticker": "AAPL",
