@@ -1,77 +1,31 @@
 import streamlit as st
+import yfinance as yf
 
-# Sample stock data
-stocks = [
-    {
-        "icon": "https://example.com/icon1.png",
-        "ticker": "AAPL",
-        "name": "Apple Inc.",
-        "description": "Technology company",
-        "location": "Cupertino, CA",
-        "current_value": "$145.09",
-        "website": "https://www.apple.com"
-    },
-    {
-        "icon": "https://example.com/icon2.png",
-        "ticker": "MSFT",
-        "name": "Microsoft Corp.",
-        "description": "Software company",
-        "location": "Redmond, WA",
-        "current_value": "$299.35",
-        "website": "https://www.microsoft.com"
-    },
-    {
-        "icon": "https://example.com/icon3.png",
-        "ticker": "GOOGL",
-        "name": "Alphabet Inc.",
-        "description": "Search engine company",
-        "location": "Mountain View, CA",
-        "current_value": "$2,748.45",
-        "website": "https://www.google.com"
-    },
-    {
-        "icon": "https://example.com/icon4.png",
-        "ticker": "AMZN",
-        "name": "Amazon.com Inc.",
-        "description": "E-commerce and cloud computing",
-        "location": "Seattle, WA",
-        "current_value": "$3,325.00",
-        "website": "https://www.amazon.com"
-    },
-    {
-        "icon": "https://example.com/icon5.png",
-        "ticker": "FB",
-        "name": "Meta Platforms Inc.",
-        "description": "Social media company",
-        "location": "Menlo Park, CA",
-        "current_value": "$353.05",
-        "website": "https://www.facebook.com"
-    },
-    {
-        "icon": "https://example.com/icon6.png",
-        "ticker": "TSLA",
-        "name": "Tesla Inc.",
-        "description": "Electric vehicle manufacturer",
-        "location": "Palo Alto, CA",
-        "current_value": "$1,025.00",
-        "website": "https://www.tesla.com"
-    }
-]
+
+# List of ticker symbols
+tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
 
 # Streamlit layout
 st.title("Stock Data Cards")
 
+
+# Base URL for the logos
+base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
+
+
+
 # Create data cards with boxes
 cols = st.columns(3)
-for i, stock in enumerate(stocks):
+for i, tick in enumerate(tickers):
     with cols[i % 3]:  # Cycle through the columns
         with st.container():  # Create a container for the card
+            stockdata = yf.Ticker(tick)
             st.markdown("---")  # Horizontal line for separation
-            st.image(stock["icon"], width=50)
-            st.markdown(f"**{stock['ticker']}**: {stock['name']}")
-            st.write(f"**Description**: {stock['description']}")
-            st.write(f"**Location**: {stock['location']}")
-            st.write(f"**Current Value**: {stock['current_value']}")
-            st.markdown(f"[Visit Website]({stock['website']})")
+            st.image(base_logo_url.format(tick), width=50)
+            st.markdown(f"**{tick}**: {stockdata.info['longName']}")
+            st.write(f"**Description**: {stockdata.info['longBusinessSummary']}")
+            st.write(f"**Location**: {stockdata.info['country']}")
+            st.write(f"**Current Value**: {stockdata.info['previousClose']}")
+            st.markdown(f"[Visit Website]({stockdata.info['website']})")
             st.markdown("---")  # Horizontal line for separation
 
