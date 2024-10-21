@@ -65,7 +65,7 @@ def plot_multiple_stocks(stock_list, start_date, end_date):
     # Add each stock to the subplot
     for i, stock in enumerate(stock_list, start=1):
         trace, latest_price, latest_pct_change, pattern = plot_stock(stock, start_date, end_date)
-        print(stock)
+        print(trace)
         fig.add_trace(trace, row=i, col=1)
 
         # Add ticker name annotation at the top left
