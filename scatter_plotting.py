@@ -50,7 +50,7 @@ def plot_stock(stock_symbol, start_date, end_date):
     # Get pattern (in a real scenario, you'd get this from your data source)
     pattern = get_pattern(df)
 
-    return trace, latest_price, latest_pct_change, pattern
+    return trace, latest_price, latest_pct_change, pattern,end_date
 
 def clacy(i,len):
   return 1-(.175*(i-1))
@@ -61,10 +61,11 @@ def plot_multiple_stocks(stock_list, start_date, end_date):
     fig = make_subplots(rows=len(stock_list), cols=1,
                         shared_xaxes=True,)
                         #vertical_spacing=0.05)  # Increased vertical spacing
-
+    end='o'
     # Add each stock to the subplot
     for i, stock in enumerate(stock_list, start=1):
-        trace, latest_price, latest_pct_change, pattern = plot_stock(stock, start_date, end_date)
+        trace, latest_price, latest_pct_change, pattern ,endd= plot_stock(stock, start_date, end_date)
+        end=endd
         fig.add_trace(trace, row=i, col=1)
 
         # Add ticker name annotation at the top left
@@ -113,4 +114,4 @@ def plot_multiple_stocks(stock_list, start_date, end_date):
     fig.update_yaxes(showgrid=False)
 
     # Show plot
-    return fig
+    return fig,end
