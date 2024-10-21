@@ -25,6 +25,7 @@ def get_pattern(df):
         return 'Neutral'
 
 def plot_stock(stock_symbol, start_date, end_date):
+    print(end_date)
     # Download stock data
     df = yf.download(stock_symbol, start=start_date, end=end_date)
 
