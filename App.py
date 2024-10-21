@@ -33,7 +33,7 @@ for i, tick in enumerate(tickers):
 # Set the date range for the graph
 start_date = dt.datetime(2023, 1, 1)
 end_date = dt.datetime.now()
-
+st.print(end_date)
 # Generate and display the graph
 fig = plot_multiple_stocks(tickers, start_date, end_date)
 st.plotly_chart(fig)  # Display the Plotly figure in Streamlit
