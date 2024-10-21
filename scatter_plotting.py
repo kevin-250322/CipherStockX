@@ -28,7 +28,7 @@ def get_pattern(df):
 def plot_stock(stock_symbol, start_date, end_date):
     print(end_date)
     # Download stock data
-    df = yf.download(stock_symbol, start=start_date, end=end_date)
+    df = yf.download(stock_symbol, start=start_date, end=dt.datetime(2024, 10, 21))
     print(df.head())
     # Calculate percentage change
     df['Pct_Change'] = df['Close'].pct_change() * 100
