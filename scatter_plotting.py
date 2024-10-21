@@ -78,7 +78,7 @@ def plot_multiple_stocks(stock_list, start_date, end_date):
 
         # Add annotations for price and percentage change in the middle
         fig.add_annotation(
-            text=f"${latest_price.iloc[0]):.2f} ({latest_pct_change.iloc[0]:+.2f}%)",
+            text=f"${latest_price.iloc[0]:.2f} ({latest_pct_change.iloc[0]:+.2f}%)",
             xref="paper", yref="paper",
             x=0.5, y=clacy(i,len(stock_list)),  # Centered horizontally
             xanchor="center", yanchor="bottom",
