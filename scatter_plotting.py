@@ -9,8 +9,8 @@ def get_pattern(df):
         return 'Neutral'  # Not enough data to determine pattern
 
     # Check the price change from two days ago
-    price_today = float(df['Close'].iloc[-1])
-    price_yesterday = float(df['Close'].iloc[-2])
+    price_today = float(df['Close'].iloc[-1].iloc[0])
+    price_yesterday = float(df['Close'].iloc[-2].iloc[0])
 
     price_today = price_today
     price_yesterday = price_yesterday
