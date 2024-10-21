@@ -28,7 +28,7 @@ def plot_stock(stock_symbol, start_date, end_date):
     print(end_date)
     # Download stock data
     df = yf.download(stock_symbol, start=start_date, end=end_date)
-
+    print(df.head())
     # Calculate percentage change
     df['Pct_Change'] = df['Close'].pct_change() * 100
 
