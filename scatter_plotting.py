@@ -50,7 +50,7 @@ def plot_stock(stock_symbol, start_date, end_date):
     # Get pattern (in a real scenario, you'd get this from your data source)
     pattern = get_pattern(df)
 
-    return trace, latest_price, latest_pct_change, pattern,end_date
+    return trace, latest_price, latest_pct_change, pattern
 
 def clacy(i,len):
   return 1-(.175*(i-1))
