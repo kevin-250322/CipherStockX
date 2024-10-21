@@ -4,6 +4,9 @@ import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 import pandas as pd
 
+import plotly.io as pio
+pio.templates.default = 'plotly' 
+
 def get_pattern(df):
     if len(df) < 2:
         return 'Neutral'  # Not enough data to determine pattern
