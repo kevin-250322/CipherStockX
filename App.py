@@ -121,4 +121,4 @@ def watch_cards(stock_hist,stock_info,live_data):
     for ticker in stock_hist:
         display_watchlist_card( ticker, stock_info[ticker]['longName'], live_data[ticker]['Close'].iloc[-1], 2, stock_hist[ticker]['Open'])
 
-#watch_cards(stock_hist,stock_info,live_data)
+watch_cards(stock_hist,stock_info,live_data)
