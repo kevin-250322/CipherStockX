@@ -173,6 +173,7 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
 
 live_data=getliveprice(tickers)
+st.write(stock_info['AAPL'])
 def watch_cards(stock_hist,stock_info,live_data):
     
     for i in range(0, len(stock_hist), 2):
