@@ -17,7 +17,7 @@ start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
 # List of ticker symbols
-tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
+tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]
 
 
 # Streamlit layout
@@ -44,13 +44,7 @@ def getliveprice(tickers):
     return live_df
 
 stock_hist,stock_info = getdata(tickers,start,end)
-for t in stock_hist:
-    st.dataframe(stock_hist[t].iloc[-1])
-    #st.write(stock_hist[t].iloc[-1])
-    info_card=['longName','previousClose','volume','averageVolume','sharesOutstanding','dayHigh','dayLow','marketCap','forwardPE','trailingEps','website']
-    for i in info_card:
 
-        st.write(i,stock_info[t][i])
 
 def batched(iterable, n_cols):
     # batched('ABCDEFG', 3) → ABC DEF G
@@ -93,10 +87,16 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
         tl, tr = st.columns([2, 1])
         bl, br = st.columns([1, 1])
+        des,mt=st.columns([100,1])
+        eg,rg,gg=st.columns([1,1,1])
+        em,w52,mt=st.columns([1,1,1])
+
 
         with tl:
-            st.html(f'<span class="watchlist_symbol_name"></span>')
-            st.markdown(f"{symbol_name}")
+            st.image(base_logo_url.format(ticker), width=75)
+            st.html(f'<span class="watchlist_symbol_name" title={stock_info[ticker]['website']}></span>')
+            st.markdown(f"{symbol_name} [🌐](stock_info[ticker]['website'])")
+            
 
         with tr:
             st.html(f'<span class="watchlist_ticker"></span>')
@@ -114,6 +114,10 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
                 st.markdown(f"$ {last_price:.2f}")
+        
+        with des:
+            with st.container():
+                st.write(stock_info[ticker]['longBusinessSummary'][:500]+"...")
 
         with br:
             fig_spark = plot_sparkline(open,'red' if negative_gradient else 'green')
@@ -121,15 +125,88 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
             st.plotly_chart(
                 fig_spark, config=dict(displayModeBar=False), use_container_width=True
             )
+        
+        with eg:  
+            with st.container():
+                st.html(f'<span class="watchlist_price_label"></span>')
+                st.markdown(f"Earnings Growth")
+
+            with st.container():
+                st.html(f'<span class="watchlist_price_value"></span>')
+                st.markdown(f"{stock_info[ticker]['earningsGrowth']*100:.2f} %")
+        
+        with rg:
+            with st.container():
+                st.html(f'<span class="watchlist_price_label"></span>')
+                st.markdown(f"Revenue Growth")
+
+            with st.container():
+                st.html(f'<span class="watchlist_price_value"></span>')
+                st.markdown(f"{stock_info[ticker]['revenueGrowth']*100:.2f} %")
+        
+        with gg:
+            with st.container():
+                st.html(f'<span class="watchlist_price_label"></span>')
+                st.markdown(f"Gross Margins")
+
+            with st.container():
+                st.html(f'<span class="watchlist_price_value"></span>')
+                st.markdown(f"{stock_info[ticker]['grossMargins']*100:.2f} %")
+        
+        with em:
+            with st.container():
+                st.html(f'<span class="watchlist_price_label"></span>')
+                st.markdown(f"EBITDA Margins")
+
+            with st.container():
+                st.html(f'<span class="watchlist_price_value"></span>')
+                st.markdown(f"{stock_info[ticker]['ebitdaMargins']*100:.2f} %")
+        
+        with w52:
+            with st.container():
+                st.html(f'<span class="watchlist_price_label"></span>')
+                st.markdown(f"52 Week Change")
+
+            with st.container():
+                st.html(f'<span class="watchlist_price_value"></span>')
+                st.markdown(f"{stock_info[ticker]['52WeekChange']*100:.2f} %")
+        
+        
+
+
+
+
 
 
 
 live_data=getliveprice(tickers)
 def watch_cards(stock_hist,stock_info,live_data):
-    for ticker in stock_hist:
-        display_watchlist_card( ticker, stock_info[ticker]['longName'], 
-                               live_data[ticker]['Close'].iloc[-1], 
-                               float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])),
-                               float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])/stock_hist[ticker]['Close'].iloc[-2]), stock_hist[ticker]['Open'])
+    
+    for i in range(0, len(stock_hist), 2):
+        col1, col2 = st.columns([1,1])  # Create 2 columns
+
+    # Place the item in the first column
+        with col1:
+            display_watchlist_card( tickers[i], stock_info[tickers[i]]['longName'], 
+                               live_data[tickers[i]]['Close'].iloc[-1], 
+                               float((live_data[tickers[i]]['Close'].iloc[-1]-stock_hist[tickers[i]]['Close'].iloc[-2])),
+                               float((live_data[tickers[i]]['Close'].iloc[-1]-stock_hist[tickers[i]]['Close'].iloc[-2])/stock_hist[tickers[i]]['Close'].iloc[-2]), stock_hist[tickers[i]]['Open'])
+
+
+    # Place the next item in the second column, if it exists
+        if i + 1 < len(stock_hist):
+            with col2:
+             display_watchlist_card( tickers[i+1], stock_info[tickers[i+1]]['longName'], 
+                               live_data[tickers[i+1]]['Close'].iloc[-1], 
+                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])),
+                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])/stock_hist[tickers[i+1]]['Close'].iloc[-2]), stock_hist[tickers[i+1]]['Open'])
+
+    # for ticker in stock_hist:
+    
+
+    #     display_watchlist_card( ticker, stock_info[ticker]['longName'], 
+    #                            live_data[ticker]['Close'].iloc[-1], 
+    #                            float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])),
+    #                            float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])/stock_hist[ticker]['Close'].iloc[-2]), stock_hist[ticker]['Open'])
 
 watch_cards(stock_hist,stock_info,live_data)
