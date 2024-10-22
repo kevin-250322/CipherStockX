@@ -158,11 +158,11 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
         with w52:
             with st.container():
                 st.html(f'<span class="watchlist_price_label"></span>')
-                st.markdown(f"52 Week Change")
+                st.markdown(f"General Market Trend")
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['52WeekChange']*100:.2f} %")
+                st.markdown(f"{stock_info[ticker]['recommendationKey']} ")
         
         
 
