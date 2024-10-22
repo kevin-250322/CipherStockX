@@ -7,7 +7,7 @@ from plotly.subplots import make_subplots
 import yfinance as yf
 from itertools import islice
 
-
+st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
 st.html("styles.html")
 pio.templates.default = "plotly_white"
 
@@ -17,7 +17,7 @@ end = dt.datetime.now()
 
 # List of ticker symbols
 tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
-st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
+
 
 # Streamlit layout
 st.title("Stock Data Cards")
