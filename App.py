@@ -12,7 +12,7 @@ st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide
 st.html("styles.html")
 pio.templates.default = "plotly_white"
 
-# Step 1: Get stock market data using Yahoo Finance via pandas_datareader
+
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
@@ -31,6 +31,8 @@ def getdata(tickers,start,end):
         stock_hist[ticker]=yf.download(ticker, start=start,end=end)
         stock_info[ticker]=yf.Ticker(ticker).info
     return stock_hist,stock_info
+
+
 # Base URL for the logos
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 
@@ -58,18 +60,23 @@ def batched(iterable, n_cols):
     while batch := tuple(islice(it, n_cols)):
         yield batch
 
-def plot_sparkline(data):
-    #st.write(data.iloc[:, 0].tolist())
+def plot_sparkline(data,line_color="red"):
+    fillcolor="pink" if line_color=="red" else "green"
     fig_spark = go.Figure(
-        data=go.Scatter(
+        data=go.Scatter(name="",
             y=data.iloc[:, 0].tolist(),
+            x=data.index.tolist(),
             mode="lines",
             fill="tozeroy",
-            line_color="red",
-            fillcolor="pink",
+            line_color=line_color,
+            fillcolor=fillcolor,
+            fillgradient=dict(
+                type="horizontal",
+                colorscale=[(0.0, "white"), (0.5, "light"+fillcolor), (1.0, fillcolor)],
+            ),
         ),
     )
-    fig_spark.update_traces(hovertemplate="Price: $ %{y:.2f}")
+    fig_spark.update_traces(hovertemplate="Price: $ %{y:.2f} %{x}")
     fig_spark.update_xaxes(visible=False, fixedrange=True)
     fig_spark.update_yaxes(visible=False, fixedrange=True)
     fig_spark.update_layout(
@@ -80,7 +87,7 @@ def plot_sparkline(data):
     )
     return fig_spark
 
-def display_watchlist_card(ticker, symbol_name, last_price, change_pct, open):
+def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, open):
     with st.container(border=True):
         st.html(f'<span class="watchlist_card"></span>')
 
@@ -96,7 +103,7 @@ def display_watchlist_card(ticker, symbol_name, last_price, change_pct, open):
             st.markdown(f"{ticker}")
             negative_gradient = float(change_pct) < 0
             st.markdown(
-                f":{'red' if negative_gradient else 'green'}[{'▼' if negative_gradient else '▲'} {change_pct} %]"
+                f":{'red' if negative_gradient else 'green'}[{'▼' if negative_gradient else '▲'} $ {change: .2f} ({change_pct:.3f} %)]"
             )
 
         with bl:
@@ -109,19 +116,20 @@ def display_watchlist_card(ticker, symbol_name, last_price, change_pct, open):
                 st.markdown(f"$ {last_price:.2f}")
 
         with br:
-            fig_spark = plot_sparkline(open)
+            fig_spark = plot_sparkline(open,'red' if negative_gradient else 'green')
             st.html(f'<span class="watchlist_br"></span>')
             st.plotly_chart(
                 fig_spark, config=dict(displayModeBar=False), use_container_width=True
             )
 
 
-#fig_spark = plot_sparkline(stock_hist['AAPL']['Open'])
-#st.html(f'<span class="watchlist_br"></span>')
-#st.plotly_chart(fig_spark, config=dict(displayModeBar=False), use_container_width=True)
+
 live_data=getliveprice(tickers)
 def watch_cards(stock_hist,stock_info,live_data):
     for ticker in stock_hist:
-        display_watchlist_card( ticker, stock_info[ticker]['longName'], live_data[ticker]['Close'].iloc[-1], 2, stock_hist[ticker]['Open'])
+        display_watchlist_card( ticker, stock_info[ticker]['longName'], 
+                               live_data[ticker]['Close'].iloc[-1], 
+                               float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])),
+                               float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])/stock_hist[ticker]['Close'].iloc[-2]), stock_hist[ticker]['Open'])
 
 watch_cards(stock_hist,stock_info,live_data)
