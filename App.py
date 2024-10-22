@@ -3,7 +3,6 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import streamlit as st
 import datetime as dt
-from itertools import islice
 from plotly.subplots import make_subplots
 import yfinance as yf
 
@@ -46,13 +45,7 @@ def getliveprice(tickers):
 stock_hist,stock_info = getdata(tickers,start,end)
 
 
-def batched(iterable, n_cols):
-    # batched('ABCDEFG', 3) → ABC DEF G
-    if n_cols < 1:
-        raise ValueError("n must be at least one")
-    it = iter(iterable)
-    while batch := tuple(islice(it, n_cols)):
-        yield batch
+
 
 def plot_sparkline(data,line_color="red"):
     fillcolor="pink" if line_color=="red" else "green"
