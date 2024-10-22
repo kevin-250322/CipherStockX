@@ -1,6 +1,6 @@
 streamlit
 Pillow
-yfinance==0.2.45
+yfinance
 plotly
 pandas
 
