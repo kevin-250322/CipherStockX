@@ -1,11 +1,12 @@
-import streamlit as st
-import plotly.io as pio
-import datetime as dt
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
+import streamlit as st
+import datetime as dt
+from itertools import islice
 from plotly.subplots import make_subplots
 import yfinance as yf
-from itertools import islice
+
 
 st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
 st.html("styles.html")
@@ -56,11 +57,12 @@ def batched(iterable, n_cols):
     it = iter(iterable)
     while batch := tuple(islice(it, n_cols)):
         yield batch
+
 def plot_sparkline(data):
-    st.write(data['AAPL'])
+    #st.write(data.iloc[:, 0].tolist())
     fig_spark = go.Figure(
         data=go.Scatter(
-            y=data,
+            y=data.iloc[:, 0].tolist(),
             mode="lines",
             fill="tozeroy",
             line_color="red",
@@ -114,11 +116,9 @@ def display_watchlist_card(ticker, symbol_name, last_price, change_pct, open):
             )
 
 
-fig_spark = plot_sparkline(stock_hist['AAPL']['Open'])
-st.html(f'<span class="watchlist_br"></span>')
-st.plotly_chart(
-                fig_spark, config=dict(displayModeBar=False), use_container_width=True
-            )
+#fig_spark = plot_sparkline(stock_hist['AAPL']['Open'])
+#st.html(f'<span class="watchlist_br"></span>')
+#st.plotly_chart(fig_spark, config=dict(displayModeBar=False), use_container_width=True)
 live_data=getliveprice(tickers)
 def watch_cards(stock_hist,stock_info,live_data):
     for ticker in stock_hist:
