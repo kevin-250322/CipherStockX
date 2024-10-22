@@ -7,15 +7,18 @@ from plotly.subplots import make_subplots
 import yfinance as yf
 from itertools import islice
 
+
+st.html("styles.html")
+pio.templates.default = "plotly_white"
+
 # Step 1: Get stock market data using Yahoo Finance via pandas_datareader
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
-pio.templates.default = "plotly_white"
 
 # List of ticker symbols
 tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NFLX"]
 st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
-st.html("styles.html")
+
 # Streamlit layout
 st.title("Stock Data Cards")
 
