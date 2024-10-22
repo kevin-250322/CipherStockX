@@ -89,7 +89,6 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
             st.image(base_logo_url.format(ticker), width=75)
             st.html(f'<span class="watchlist_symbol_name" title={stock_info[ticker]['website']}></span>')
             st.markdown(f"{symbol_name} [🌐](%s)"%stock_info[ticker]['website'])
-            st.write("check out this [link](%s)" % stock_info[ticker]['website'])
             
 
         with tr:
