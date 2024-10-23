@@ -221,21 +221,21 @@ def plot_candlestick(history_df):
         row_heights=[0.7, 0.3],
         vertical_spacing=0.1,
     )
-
+  
     f_candle.add_trace(
         go.Candlestick(
-            x=history_df.index,
-            open=history_df["Open"],
-            high=history_df["High"],
-            low=history_df["Low"],
-            close=history_df["Close"],
+            x=history_df.index.tolist(),
+            open=history_df["Open"].iloc[:, 0].tolist(),
+            high=history_df["High"].iloc[:, 0].tolist(),
+            low=history_df["Low"].iloc[:, 0].tolist(),
+            close=history_df["Close"].iloc[:, 0].tolist(),
             name="Dollars",
         ),
         row=1,
         col=1,
     )
     f_candle.add_trace(
-        go.Bar(x=history_df.index, y=history_df["Volume"], name="Volume Traded"),
+        go.Bar(x=history_df.index.tolist(), y=history_df["Volume"].iloc[:, 0].tolist(), name="Volume Traded"),
         row=2,
         col=1,
     )
@@ -260,13 +260,12 @@ def plot_candlestick(history_df):
     f_candle.update_traces(selector=dict(name="Dollars"), showlegend=True)
     return f_candle
 
+
 @st.fragment
-def display_symbol_history( stock_hist):
+def display_symbol_history(stock_hist):
     selected_ticker, selected_period = filter_symbol_widget()
     mapping_period = {"Week": 7, "Month": 31, "Trimester": 90, "Year": 365}
     history_df=stock_hist[selected_ticker].tail(mapping_period[selected_period])
-    # st.write(history_df)
-    # st.write(history_df["Volume"].min().iloc[0])
 
     
     left_chart, right_indicator = st.columns([1.5, 1])
@@ -296,50 +295,10 @@ def display_symbol_history( stock_hist):
            
             st.metric("Average Daily Volume", f'{history_df["Volume"].mean().iloc[0]:,.2f}')
             st.metric("Current Market Cap"," $ "+hm.intword(stock_info[selected_ticker]["marketCap"]))
+    return selected_ticker
                     
 
 
-def display_overview(ticker_df):
-    def format_currency(val):
-        return "$ {:,.2f}".format(val)
 
-    def format_percentage(val):
-        return "{:,.2f} %".format(val)
+ticker_picked=display_symbol_history(stock_hist)
 
-    def format_change(val):
-        return "color: red;" if (val < 0) else "color: green;"
-
-    def apply_odd_row_class(row):
-        return ["background-color: #f8f8f8" if row.name % 2 != 0 else "" for _ in row]
-
-    with st.expander("📊 Stocks Preview"):
-        styled_dataframe = (
-            ticker_df.style.format(
-                {
-                    "Last Price": format_currency,
-                    "Change Pct": format_percentage,
-                }
-            )
-            .apply(apply_odd_row_class, axis=1)
-            .map(format_change, subset=["Change Pct"])
-        )
-
-        st.dataframe(
-            styled_dataframe,
-            column_order=[column for column in list(ticker_df.columns)],
-            column_config={
-                "Open": st.column_config.AreaChartColumn(
-                    "Last 12 Months",
-                    width="large",
-                    help="Open Price for the last 12 Months",
-                ),
-            },
-            hide_index=True,
-            height=250,
-            use_container_width=True,
-        )
-
-
-
-display_symbol_history( stock_hist)
-#display_overview(ticker_df)
