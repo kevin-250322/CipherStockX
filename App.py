@@ -5,6 +5,7 @@ import streamlit as st
 import datetime as dt
 from plotly.subplots import make_subplots
 import yfinance as yf
+import humanize as hm
 
 
 st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
@@ -110,7 +111,7 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
         
         with des:
             with st.container():
-                st.write(stock_info[ticker]['longBusinessSummary'][:500]+"...")
+                st.write(stock_info[ticker]['longBusinessSummary'][:350]+"...")
 
         with br:
             fig_spark = plot_sparkline(open,'red' if negative_gradient else 'green')
@@ -164,13 +165,6 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
                 st.html(f'<span class="watchlist_price_value"></span>')
                 st.markdown(f"{stock_info[ticker]['recommendationKey']} ")
         
-        
-
-
-
-
-
-
 
 live_data=getliveprice(tickers)
 
@@ -204,3 +198,148 @@ def watch_cards(stock_hist,stock_info,live_data):
     #                            float((live_data[ticker]['Close'].iloc[-1]-stock_hist[ticker]['Close'].iloc[-2])/stock_hist[ticker]['Close'].iloc[-2]), stock_hist[ticker]['Open'])
 
 watch_cards(stock_hist,stock_info,live_data)
+
+
+def filter_symbol_widget():
+    with st.container():
+        left_widget, right_widget, _ = st.columns([1, 1, 3])
+
+    selected_ticker = left_widget.selectbox(
+        "📰 Currently Showing", list(tickers)
+    )
+    selected_period = right_widget.selectbox(
+        "⌚ Period", ("Week", "Month", "Trimester", "Year"), 3
+    )
+
+    return selected_ticker, selected_period
+
+def plot_candlestick(history_df):
+    f_candle = make_subplots(
+        rows=2,
+        cols=1,
+        shared_xaxes=True,
+        row_heights=[0.7, 0.3],
+        vertical_spacing=0.1,
+    )
+
+    f_candle.add_trace(
+        go.Candlestick(
+            x=history_df.index,
+            open=history_df["Open"],
+            high=history_df["High"],
+            low=history_df["Low"],
+            close=history_df["Close"],
+            name="Dollars",
+        ),
+        row=1,
+        col=1,
+    )
+    f_candle.add_trace(
+        go.Bar(x=history_df.index, y=history_df["Volume"], name="Volume Traded"),
+        row=2,
+        col=1,
+    )
+    f_candle.update_layout(
+        title="Stock Price Trends",
+        showlegend=True,
+        xaxis_rangeslider_visible=False,
+        # xaxis=dict(title="date"),
+        yaxis1=dict(title="OHLC"),
+        yaxis2=dict(title="Volume"),
+        hovermode="x",
+    )
+    f_candle.update_layout(
+        title_font_family="Open Sans",
+        title_font_color="#174C4F",
+        title_font_size=32,
+        font_size=16,
+        margin=dict(l=80, r=80, t=100, b=80, pad=0),
+        height=500,
+    )
+    f_candle.update_xaxes(title_text="Date", row=2, col=1)
+    f_candle.update_traces(selector=dict(name="Dollars"), showlegend=True)
+    return f_candle
+
+@st.fragment
+def display_symbol_history( stock_hist):
+    selected_ticker, selected_period = filter_symbol_widget()
+    mapping_period = {"Week": 7, "Month": 31, "Trimester": 90, "Year": 365}
+    history_df=stock_hist[selected_ticker].tail(mapping_period[selected_period])
+    # st.write(history_df)
+    # st.write(history_df["Volume"].min().iloc[0])
+
+    
+    left_chart, right_indicator = st.columns([1.5, 1])
+
+    f_candle = plot_candlestick(history_df)
+
+    with left_chart:
+        st.html('<span class="column_plotly"></span>')
+        st.plotly_chart(f_candle, use_container_width=True)
+
+    with right_indicator:
+        st.html('<span class="column_indicator"></span>')
+        st.subheader("Period Metrics")
+        l, r = st.columns(2)
+
+        with l:
+            st.html('<span class="low_indicator"></span>')
+            st.metric("Lowest Volume Day", f'{history_df["Volume"].min().iloc[0]:,}')
+            st.metric("Lowest Close Price", f'$ {history_df["Close"].min().iloc[0]:,.2f}')
+        with r:
+            st.html('<span class="high_indicator"></span>')
+            st.metric("Highest Volume Day", f'{history_df["Volume"].max().iloc[0]:,}')
+            st.metric("Highest Close Price", f'$ {history_df["Close"].max().iloc[0]:,.2f}')
+
+        with st.container():
+            st.html('<span class="bottom_indicator"></span>')
+           
+            st.metric("Average Daily Volume", f'{history_df["Volume"].mean().iloc[0]:,.2f}')
+            st.metric("Current Market Cap"," $ "+hm.intword(stock_info[selected_ticker]["marketCap"]))
+                    
+
+
+def display_overview(ticker_df):
+    def format_currency(val):
+        return "$ {:,.2f}".format(val)
+
+    def format_percentage(val):
+        return "{:,.2f} %".format(val)
+
+    def format_change(val):
+        return "color: red;" if (val < 0) else "color: green;"
+
+    def apply_odd_row_class(row):
+        return ["background-color: #f8f8f8" if row.name % 2 != 0 else "" for _ in row]
+
+    with st.expander("📊 Stocks Preview"):
+        styled_dataframe = (
+            ticker_df.style.format(
+                {
+                    "Last Price": format_currency,
+                    "Change Pct": format_percentage,
+                }
+            )
+            .apply(apply_odd_row_class, axis=1)
+            .map(format_change, subset=["Change Pct"])
+        )
+
+        st.dataframe(
+            styled_dataframe,
+            column_order=[column for column in list(ticker_df.columns)],
+            column_config={
+                "Open": st.column_config.AreaChartColumn(
+                    "Last 12 Months",
+                    width="large",
+                    help="Open Price for the last 12 Months",
+                ),
+            },
+            hide_index=True,
+            height=250,
+            use_container_width=True,
+        )
+
+
+
+display_symbol_history( stock_hist)
+#display_overview(ticker_df)

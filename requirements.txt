@@ -3,4 +3,4 @@ Pillow
 yfinance
 plotly
 pandas
-
+humanize
