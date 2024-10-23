@@ -208,7 +208,7 @@ def filter_symbol_widget():
         "📰 Currently Showing", list(tickers)
     )
     selected_period = right_widget.selectbox(
-        "⌚ Period", ("Week", "Month", "Trimester", "Year"), 3
+        "⌚ Period", ("Week", "Month", "Trimester", "Year"), 2
     )
 
     return selected_ticker, selected_period
