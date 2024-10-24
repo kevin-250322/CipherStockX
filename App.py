@@ -6,13 +6,33 @@ import datetime as dt
 from plotly.subplots import make_subplots
 import yfinance as yf
 import humanize as hm
+import os
+from typing import List
+from pydantic import BaseModel
+import google.generativeai as genai
+import json
 
+
+class StockInfo(BaseModel):
+    ticker: str
+    earnings_growth: str
+    revenue_growth: str
+    ebitda_margin: str
+    gross_margin: str
+    fifty_two_week_change: str
+    summary: str
+
+class StockComparisonSummary(BaseModel):
+    stock_comparison: List[StockInfo]
+    overall_summary: str
 
 st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
 st.html("styles.html")
 pio.templates.default = "plotly_white"
 
 
+genai.configure(api_key=os.getenv("API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
@@ -265,6 +285,109 @@ def plot_candlestick(history_df):
     f_candle.update_traces(selector=dict(name="Dollars"), showlegend=True)
     return f_candle
 
+def plotallscatter():
+    normalized_data = pd.DataFrame()
+    for ticker, prices in stock_hist.items():
+    # Calculate the percentage change
+        pct_chnage_data=pd.DataFrame(prices['Adj Close'])
+        normalized_data[ticker] = (pct_chnage_data.pct_change().apply(lambda x: (1+x).cumprod())-1)*100
+
+# Plotting with Plotly
+    fig = make_subplots(rows=1, cols=1)
+
+# Add traces for each stock
+    for ticker in normalized_data.columns:
+        fig.add_trace(
+        go.Scatter(x=normalized_data.index, y=normalized_data[ticker], mode='lines', name=ticker)
+    )
+
+# Customize the layout
+    fig.update_layout(
+    title="Normalized Stock Price History (% Change)",
+    xaxis_title="Date",
+    yaxis_title="Normalized Price Change (%)",
+    legend_title="Stock Ticker",
+    template="ggplot2"
+    )
+
+# Show the plot
+    st.plotly_chart(fig)
+
+st.title("Stock Price Comparison")
+st.write()
+
+plotallscatter()
+
+
+st.write()
+st.title("Stock Comparison Summary")
+
+stock_info_json = json.dumps(stock_info)  # Convert your stock_info dictionary to a JSON string
+
+prompt = f"""
+Please provide a detailed stock comparison summary in JSON format. Compare each stock based on these metrics:
+1. Earnings growth
+2. Revenue growth
+3. EBITDA margins
+4. Gross margins
+5. 52-week change
+
+For each stock, create an individual summary in JSON, followed by a brief paragraph explaining the comparison results in a human-readable format. Ensure the output is well-structured in JSON.
+
+Input JSON for stocks:
+{stock_info_json}
+
+Output format:
+{{
+    "stock_comparison": [
+        {{
+            "ticker": "AMT",
+            "earnings_growth": "88.20%",
+            "revenue_growth": "4.60%",
+            "ebitda_margin": "71.45%",
+            "gross_margin": "52.71%",
+            "52_week_change": "29.41%",
+            "summary": "Stock AMT has the highest earnings growth (88.20%) and gross margins (71.45%), along with a strong
+            52-week change (29.41%), but its revenue growth (4.60%) is lower compared to EQIX and DLR."
+        }},
+        ...
+    ],
+    "overall_summary": "In Summary: This comparison highlights a variety of performance metrics among the stocks. AMT stands out for its significant earnings growth and high margins, while EQIX offers a balance between growth and decent margins. DLR provides strong margins albeit with declining growth, and HPE struggles with both low growth and margins. NTTYY exhibits the lowest performance across multiple metrics. Investors may prioritize different features based on their risk appetite and investment objectives."
+}}
+
+later on i shld be able to use like this json like this to print 
+'
+Stock Comparison Summary
+• Stock AMT has the highest earnings growth (88.20%) and gross margins (71.45%), along with a strong
+52-week change (29.41%), but its revenue growth (4.60%) is lower compared to EQIX and DLR.
+• Stock EQIX has impressive earnings growth (43.00%) and consistent revenue growth (6.90%), with solid EBITDA margins (37.71%), but its gross margins are lower than AMT and DLR.
+• Stock DLR has the highest gross margins (52.71%) and EBITDA margins (43.63%), but it faces A significant declines in both earnings growth (-41.10%) and revenue growth (-4.10%), despite a reasonably high 52-week change (15.24%).
+• Stock HPE displays declining earnings growth (-25.20%) and modest revenue growth (3.30%), with the lowest gross margins (34.97%) and EBITDA margins (17.28%), alongside a moderate 52-week change (7.38%).
+• Stock NTTYY shows declining earnings growth (-26.00%) and relatively lower gross margins (29.14%)
+compared to its peers, with a negative 52-week change (-6.15%).
+In Summary: This comparison highlights a variety of performance metrics among the stocks. AMT stands out for its significant earnings growth and high margins, while EQIX offers a balance between growth and decent margins. DLR provides strong margins albeit with declining growth, and HPE struggles with both low growth and margins. NTTYY exhibits the lowest performance across multiple metrics. Investors may prioritize different features based on their risk appetite and investment objectives.'
+MAKE SURE TO USE % METRICS IN SUMMARY OF EACH TICKER and ONLY OUTPUT JSON AND NO PREAMBEL OR POST COMMNETS
+"""
+
+# Generating structured output using Gemini's JSON mode
+response = model.generate_content(prompt)
+def find_braces_positions(s: str):
+    first_brace = s.find('{')  # Find the position of the first '{'
+    last_brace = s.rfind('}')  # Find the position of the last '}'
+    return first_brace, last_brace
+Start,End=find_braces_positions(response.text)
+
+rt=json.loads(response.text[Start:End+1])
+
+for item in rt['stock_comparison']:
+    st.write("- "+item['summary'])
+st.write(rt['overall_summary'])
+
+
+st.divider()
+
+st.title("Candelstick Dashboard")
+
 
 @st.fragment
 def display_symbol_history(stock_hist):
@@ -308,4 +431,9 @@ def display_symbol_history(stock_hist):
 
 
 ticker_picked=display_symbol_history(stock_hist)
+
+
+
+
+    
 
