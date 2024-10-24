@@ -11,7 +11,12 @@ from typing import List
 from pydantic import BaseModel
 import google.generativeai as genai
 import json
-
+import requests
+from bs4 import BeautifulSoup
+from sec_cik_mapper import StockMapper
+import os
+import json
+import subprocess
 
 class StockInfo(BaseModel):
     ticker: str
@@ -433,7 +438,239 @@ def display_symbol_history(stock_hist):
 ticker_picked=display_symbol_history(stock_hist)
 
 
+st.divider()
+st.title("Sentiment Analysis")
+
+def UrlTextScrape(url):
+
+  try:
+    response = requests.get(url)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.content, 'html.parser')
+    page_text = soup.get_text(separator=' ', strip=True)
+    return page_text
+
+  except requests.RequestException as e:
+    return
+
+sentiments = {}
 
 
-    
+def sentiment_data():
 
+    for tick in tickers:
+        stock = yf.Ticker(tick)
+        sentiments[tick] = []
+        for i in range(0,len(stock.news)):
+            if '/m/' not in stock.news[i]['link']:
+                text = UrlTextScrape(stock.news[i]['link'])
+                sentiments[tick].append(
+            {
+                'date': stock.news[i]['providerPublishTime'],
+                'title': stock.news[i]['title'],
+                'text': text,
+                'liink': stock.news[i]['link'],
+                'relatedTickers': stock.news[i]['relatedTickers']
+
+            }
+        )
+sentiment_data()
+sentiment_analysis = json.dumps(sentiments)
+
+prompt2=f"""
+perform sentiment analysis for each ticker and give analysis(write in the tone of an analysit and mentioning number and 
+comprasion data if possible) and sentiment score(0-100) output in json format here is the input json {sentiment_analysis}
+
+Example output format:
+{{
+  "AMT": {{
+    "analysis": str,
+    "sentiment_score": 95
+  }},
+  ........
+}}
+"""
+response2 = model.generate_content(prompt2)
+Start1,End1=find_braces_positions(response2.text)
+
+sentiment_analysis_dict=json.loads(response2.text[Start1:End1+1])
+
+bardata={}
+for ticker, info in sentiment_analysis_dict.items():
+    bardata[ticker] = info["sentiment_score"]
+
+df = pd.DataFrame(list(bardata.items()), columns=['Company', 'Sentiment Score'])
+
+# Create a bar chart using Plotly
+fig = go.Figure(data=[
+    go.Bar(x=df['Company'], y=df['Sentiment Score'], marker_color='skyblue')
+])
+
+# Update layout
+fig.update_layout(
+    title='Average Sentiment Score by stock',
+    xaxis_title='Company Ticker',
+    yaxis_title='Average Sentiment Score',
+    template='plotly_white'
+)
+st.plotly_chart(fig)
+st.write("Sentiment Analysis Summary")
+for tick in sentiment_analysis_dict:
+    st.write("- "+sentiment_analysis_dict[tick]['analysis'])
+
+st.divider()
+
+st.title('Sec Filling Analysis')
+
+def analyze_sec_filing(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+
+    facts = data['facts']
+
+    # Performance Score
+    performance_score = calculate_performance_score(facts)
+
+    # Risk Factor Score
+    risk_score = calculate_risk_score(facts)
+
+    # Growth Potential Score
+    growth_score = calculate_growth_score(facts)
+
+    # Market Position Score
+    market_score = calculate_market_score(facts)
+
+    return {
+
+
+
+        "Market Position Score": market_score,
+        "Growth Potential Score": growth_score,
+        "Performance Score": performance_score,
+        "Risk Factor Score": risk_score
+    }
+
+def calculate_performance_score(facts):
+    # Use EntityCommonStockSharesOutstanding as a proxy for performance
+    shares_outstanding = facts['dei']['EntityCommonStockSharesOutstanding']['units']['shares']
+    latest_shares = shares_outstanding[-1]['val']
+    previous_shares = shares_outstanding[-2]['val']
+
+    performance_change = (latest_shares - previous_shares) / previous_shares
+    performance_score = min(max(performance_change * 100 + 50, 0), 100)
+    return round(performance_score, 2)
+
+def calculate_risk_score(facts):
+    # Use AccountsPayableCurrent as a proxy for risk
+    if 'AccountsPayableCurrent' in facts.get('us-gaap', {}):
+        accounts_payable = facts['us-gaap']['AccountsPayableCurrent']['units']['USD']
+        latest_payable = accounts_payable[-1]['val']
+        previous_payable = accounts_payable[-2]['val']
+
+        risk_change = (latest_payable - previous_payable) / previous_payable
+        risk_score = 100 - min(max(risk_change * 100 + 50, 0), 100)
+    else:
+        risk_score = 50  # Default score if data is not available
+
+    return round(risk_score, 2)
+
+def calculate_growth_score(facts):
+    # Use EntityPublicFloat as a proxy for growth potential
+    public_float = facts['dei']['EntityPublicFloat']['units']['USD']
+    latest_float = public_float[-1]['val']
+    previous_float = public_float[-2]['val']
+
+    growth_rate = (latest_float - previous_float) / previous_float
+    growth_score = min(max(growth_rate * 50 + 50, 0), 100)
+    return round(growth_score, 2)
+
+def calculate_market_score(facts):
+    # Example: Market Value relative to industry benchmark
+    try:
+        public_float = facts['dei']['EntityPublicFloat']['units']['USD'][-1]['val']
+        industry_benchmark = 1000000000000  # Replace with actual industry data
+        market_position_score = (public_float / industry_benchmark) * 100
+        return min(max(market_position_score, 0), 100)  # Limit score between 0 and 100
+    except KeyError:
+        return 0
+def download_and_analyze(tickers):
+    sec_score={}
+    stock_mapper = StockMapper()
+
+    # Loop through each ticker in the list
+    for ticker in tickers:
+        try:
+            # Get the CIK number
+            cik = stock_mapper.ticker_to_cik.get(ticker)
+            if cik is None:
+                print(f"CIK not found for {ticker}. Skipping...")
+                continue
+
+            # Format the CIK as a string with leading zeros to match the SEC API format
+            cik_str = f"CIK{cik.zfill(10)}"  # Ensure CIK is 10 digits long
+
+            # Build the SEC API URL
+            sec_url = f"https://data.sec.gov/api/xbrl/companyfacts/{cik_str}.json"
+
+            # Define the local file path for saving the JSON
+            file_path = f"{cik_str}.json"  # Save in the current working directory
+
+            # Use requests to download the JSON file from the SEC API
+            headers = {
+                'User-Agent': 'for research AdminContact@example.com'
+            }
+            response = requests.get(sec_url, headers=headers)
+
+            # Check if the request was successful
+            if response.status_code == 200:
+                with open(file_path, 'w') as json_file:
+                    json.dump(response.json(), json_file)
+                # Analyze the downloaded file
+                results = analyze_sec_filing(file_path)
+                results["path"]=file_path
+                results['url']=sec_url
+                sec_score[ticker]=results
+                print(f"Results for {ticker}: {results}")
+            else:
+                print(f"Failed to download data for {ticker}: {response.status_code}")
+
+        except Exception as e:
+            print(f"Error processing {ticker}: {str(e)}")
+        
+    return sec_score    
+
+
+# Run the download and analysis for all tickers
+sec_status=download_and_analyze(tickers)
+st.write()
+for ticker in tickers:
+    left,right=st.columns([1,1])
+    with left:
+        st.write(ticker)
+
+    if ticker not in sec_status:
+        with left:
+            st.write("failed parsing sec filling imcomplete recent filling")
+        
+    else:
+        with right: 
+            st.markdown(f" [View Sec Filling ](%s)"%sec_status[ticker]['url'])
+        with left:
+            name,no=st.columns([9,1])
+            with name:
+                st.progress( int(sec_status[ticker]['Market Position Score']), text= 'Market Position Score')
+                st.progress( int(sec_status[ticker]['Growth Potential Score']), text='Growth Potential Score')
+            with no:
+                st.write(str(int(sec_status[ticker]['Market Position Score'])))
+                st.write(str(int(sec_status[ticker]['Growth Potential Score'])))
+
+        with right:
+            name,no=st.columns([9,1])
+            with name:
+                st.progress(int( sec_status[ticker]['Performance Score']), 'Performance Score')
+                st.progress( int(sec_status[ticker]['Risk Factor Score']), 'Risk Factor Score')
+            with no:
+                st.write(str(int(sec_status[ticker]['Performance Score'])))
+                st.write(str(int(sec_status[ticker]['Risk Factor Score'])))
+    st.divider()
+        
