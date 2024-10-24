@@ -659,18 +659,23 @@ for ticker in tickers:
             name,no=st.columns([9,1])
             with name:
                 st.progress( int(sec_status[ticker]['Market Position Score']), text= 'Market Position Score')
-                st.progress( int(sec_status[ticker]['Growth Potential Score']), text='Growth Potential Score')
             with no:
                 st.write(str(int(sec_status[ticker]['Market Position Score'])))
+            with name:
+                st.progress( int(sec_status[ticker]['Growth Potential Score']), text='Growth Potential Score')
+            with no:
                 st.write(str(int(sec_status[ticker]['Growth Potential Score'])))
 
         with right:
             name,no=st.columns([9,1])
             with name:
                 st.progress(int( sec_status[ticker]['Performance Score']), 'Performance Score')
-                st.progress( int(sec_status[ticker]['Risk Factor Score']), 'Risk Factor Score')
+             
             with no:
                 st.write(str(int(sec_status[ticker]['Performance Score'])))
+            with name:
+                st.progress( int(sec_status[ticker]['Risk Factor Score']), 'Risk Factor Score')
+            with no:
                 st.write(str(int(sec_status[ticker]['Risk Factor Score'])))
     st.divider()
         
