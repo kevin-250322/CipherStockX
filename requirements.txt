@@ -5,5 +5,5 @@ plotly
 pandas
 humanize
 google-generativeai
-BeautifulSoup
+BeautifulSoup4
 sec-cik-mapper
