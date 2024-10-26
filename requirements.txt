@@ -6,6 +6,6 @@ pandas
 humanize
 google-generativeai
 BeautifulSoup4
-sec-cik-mapper
-faiss
+faiss-cpu
 numpy
+sec-cik-mapper
