@@ -38,7 +38,7 @@ st.html("styles.html")
 pio.templates.default = "plotly_white"
 
 # Load the FAISS index
-index = faiss.read_index("Assets/faiss_index.bin",label="enter sector")
+index = faiss.read_index("Assets/faiss_index.bin")
 genai.configure(api_key=os.getenv("API_KEY"))
 
 model = genai.GenerativeModel("gemini-1.5-flash-8b")
@@ -46,7 +46,7 @@ model = genai.GenerativeModel("gemini-1.5-flash-8b")
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
-keyword=st.text_input(value="Automobile")
+keyword=st.text_input(value="Automobile",label="enter sector")
 
 data = pd.read_csv("/content/nasdaq_with_summaries.csv")
 data['Summary'] = data['Summary'].fillna(" ")
