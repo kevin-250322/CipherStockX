@@ -46,7 +46,7 @@ model = genai.GenerativeModel("gemini-1.5-flash-8b")
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
-keyword=st.text_input()
+keyword=st.text_input(value="Automobile")
 
 data = pd.read_csv("/content/nasdaq_with_summaries.csv")
 data['Summary'] = data['Summary'].fillna(" ")
