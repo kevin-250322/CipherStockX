@@ -48,7 +48,7 @@ end = dt.datetime.now()
 
 keyword=st.text_input(value="Automobile",label="enter sector")
 
-data = pd.read_csv("/content/nasdaq_with_summaries.csv")
+data = pd.read_csv("Assets/nasdaq_with_summaries.csv")
 data['Summary'] = data['Summary'].fillna(" ")
 data['Industry'] = data['Industry'].fillna(" ")
 data['Sector'] = data['Sector'].fillna(" ")
