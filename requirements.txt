@@ -7,3 +7,5 @@ humanize
 google-generativeai
 BeautifulSoup4
 sec-cik-mapper
+faiss
+numpy

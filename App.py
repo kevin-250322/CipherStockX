@@ -17,6 +17,8 @@ from sec_cik_mapper import StockMapper
 import os
 import json
 import subprocess
+import faiss
+import numpy as np
 
 class StockInfo(BaseModel):
     ticker: str
@@ -35,17 +37,46 @@ st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide
 st.html("styles.html")
 pio.templates.default = "plotly_white"
 
-
+# Load the FAISS index
+index = faiss.read_index("/Assets/faiss_index.bin")
 genai.configure(api_key=os.getenv("API_KEY"))
+
 model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
+keyword=st.text_input()
+
+data = pd.read_csv("/content/nasdaq_with_summaries.csv")
+data['Summary'] = data['Summary'].fillna(" ")
+data['Industry'] = data['Industry'].fillna(" ")
+data['Sector'] = data['Sector'].fillna(" ")
+
+# Select relevant columns for embedding
+data['Description'] = data['Summary'] + " " + data['Industry'] + " " + data['Sector']
+
+
+# Function to perform search based on the FAISS index
+def find_similar_stocks(query, top_k=6):
+    # Generate an embedding for the query text
+    query_embedding = genai.embed_content(model="models/text-embedding-004", content=[query])['embedding'][0]
+    query_vector = np.array(query_embedding).astype("float32").reshape(1, -1)
+
+    # Search the FAISS index with the query embedding
+    distances, indices = index.search(query_vector, top_k)
+
+    # Retrieve and display the top matching results, sorted by Market Cap
+    results = data.iloc[indices[0]].assign(distance=distances[0]).sort_values(by='Market Cap', ascending=False)  # Change to ascending=True for ascending sort
+
+    return results[['Symbol', 'Name', 'Industry', 'Sector', 'Summary', 'distance', 'Market Cap']]
+
+
 # List of ticker symbols
-tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]
+#tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]
 
-
+tickers=find_similar_stocks(keyword)['Symbol'].tolist()
+print(tickers)
 # Streamlit layout
 st.title("Stock Data Cards")
 

@@ -1,3 +1,4 @@
 .devcontainer
 .streamlit/secrets.toml
 *.json
+.DS_Store
