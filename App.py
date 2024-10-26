@@ -38,7 +38,7 @@ st.html("styles.html")
 pio.templates.default = "plotly_white"
 
 # Load the FAISS index
-index = faiss.read_index("Assets/faiss_index.bin")
+index = faiss.read_index("Assets/faiss_index.bin",label="enter sector")
 genai.configure(api_key=os.getenv("API_KEY"))
 
 model = genai.GenerativeModel("gemini-1.5-flash-8b")
