@@ -97,8 +97,7 @@ base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 def getliveprice(tickers):
     live_df={}
     for ticker in tickers:
-        live_df[ticker]=yf.download(ticker, interval="1m", period="1w").iloc[-1]
-
+        live_df[ticker]=yf.download(ticker, interval="1m", period="2d").iloc[-1]
     return live_df
 
 stock_hist,stock_info = getdata(tickers,start,end)
