@@ -85,8 +85,10 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['earningsGrowth']*100:.2f} %")
-        
+                if 'earningsGrowth' in stock_info[ticker].keys():
+                    st.markdown(f"{stock_info[ticker]['earningsGrowth']*100:.2f} %")
+                else:
+                    st.markdown("--")
         with rg:
             with st.container():
                 st.html(f'<span class="watchlist_price_label"></span>')
@@ -94,7 +96,11 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['revenueGrowth']*100:.2f} %")
+                if 'revenueGrowth' in stock_info[ticker].keys():
+                    st.markdown(f"{stock_info[ticker]['revenueGrowth']*100:.2f} %")
+                else:
+                    st.markdown("--")
+                
         
         with gg:
             with st.container():
@@ -103,7 +109,11 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['grossMargins']*100:.2f} %")
+                if 'grossMargins' in stock_info[ticker].keys():
+                    st.markdown(f"{stock_info[ticker]['grossMargins']*100:.2f} %")
+                else:
+                    st.markdown("--")
+                
         
         with em:
             with st.container():
@@ -112,7 +122,11 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['ebitdaMargins']*100:.2f} %")
+                if 'ebitdaMargins' in stock_info[ticker].keys():
+                    st.markdown(f"{stock_info[ticker]['ebitdaMargins']*100:.2f} %")
+                else:
+                    st.markdown("--")
+                
         
         with w52:
             with st.container():
@@ -121,7 +135,11 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
             with st.container():
                 st.html(f'<span class="watchlist_price_value"></span>')
-                st.markdown(f"{stock_info[ticker]['recommendationKey']} ")
+                if 'recommendationKey' in stock_info[ticker].keys():
+                    st.markdown(f"{stock_info[ticker]['recommendationKey']} ")
+                else:
+                    st.markdown("--")
+                
 
 @st.fragment
 def display_symbol_history(stock_hist):
