@@ -333,7 +333,9 @@ keyword=st.text_input(value="Popular",label="Enter Sector")
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 
 #if st.button("find stocks"):
-st.button("finds stocks")
+if st.button("finds stocks"):
+    st.write(llms.eloberateprompt(keyword))
+
 if True:
 # # List of ticker symbols
     tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]

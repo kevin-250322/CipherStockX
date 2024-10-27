@@ -81,6 +81,10 @@ class llm:
                     ........
                     }}
                     """
+        self.prompt3="""Refine the input '{keyword}' to add context for accurately identifying companies in this sector.
+                    Return a precise, single sentence describing the companies or sector relevant to '{keyword}' in a way that enhances search specificity.
+                    For example, 'data center builders' becomes 'companies specializing in designing, constructing, and supplying technology for data storage and processing centers.'
+                    Note: NO Preambel"""
 
 
     def find_braces_positions(self,s: str):
@@ -132,4 +136,9 @@ class llm:
         response2 = self.model.generate_content(self.prompt2.format(sentiment_analysis=sentiment_analysis))
         Start1,End1=self.find_braces_positions(response2.text)
         return json.loads(response2.text[Start1:End1+1])#sentiment_analysis_dict
+    
+    def eloberateprompt(self,keywords):
+        response3=self.model.generate_content(self.prompt3.format(keyword=keywords))
+        return response3.text
+
 
