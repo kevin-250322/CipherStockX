@@ -23,7 +23,10 @@ from Plotting import plotting
 from Vectorbase import vectorbase
 llms=llm()
 plottings=plotting()
-vectorbases=vectorbase()
+@st.cache_data
+def vector():
+    return vectorbase()
+vectorbases=vector()
 
 def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, open):
     with st.container(border=True):
