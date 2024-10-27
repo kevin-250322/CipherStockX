@@ -20,10 +20,10 @@ import subprocess
 
 from Llm import llm
 from Plotting import plotting
-
+from Vectorbase import vectorbase
 llms=llm()
 plottings=plotting()
-vectorbase=vectorbase()
+vectorbases=vectorbase()
 
 def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, open):
     with st.container(border=True):
@@ -335,7 +335,10 @@ base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 
 #if st.button("find stocks"):
 if st.button("finds stocks"):
-    st.write(llms.eloberateprompt(keyword))
+    serch_query=llms.eloberateprompt(keyword)
+    ticks=vectorbases.find_similar_stocks(serch_query)
+    st.write(type(ticks['Symbol'].tolist())
+    
 
 if True:
 # # List of ticker symbols
