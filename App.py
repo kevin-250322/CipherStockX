@@ -37,7 +37,9 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
 
 
         with tl:
-            st.image(base_logo_url.format(ticker), width=75)
+            #st.image(base_logo_url.format(ticker), width=75)
+            st.image(base_logo_url.format(ticker) if requests.get(base_logo_url.format(ticker)).status_code == 200 else default_logo_url, width=75)
+
             st.html(f'<span class="watchlist_symbol_name" title={stock_info[ticker]['website']}></span>')
             st.markdown(f"{symbol_name} [🌐](%s)"%stock_info[ticker]['website'])
             
@@ -327,11 +329,13 @@ pio.templates.default = "plotly_white"
 
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
-
-keyword=st.text_input(value="Automotive",label="Enter Sector")
+st.title("Automated Stock Analysis")
+keyword=st.text_input(value="Automotive",label="Enter a description of the kinds of stocks you are looking for:")
 
 # Base URL for the logos
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
+
+default_logo_url=""
 
 #if st.button("find stocks"):
 if st.button("finds stocks"):
