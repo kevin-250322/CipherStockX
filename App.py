@@ -337,7 +337,7 @@ base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 if st.button("finds stocks"):
     serch_query=llms.eloberateprompt(keyword)
     ticks=vectorbases.find_similar_stocks(serch_query)
-    st.write(type(ticks['Symbol'].tolist())
+    st.write(ticks['Symbol'].tolist())
     
 
 if True:
