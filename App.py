@@ -338,7 +338,7 @@ if st.button("finds stocks"):
     serch_query=llms.eloberateprompt(keyword)
     ticks=vectorbases.find_similar_stocks(serch_query)
     tickers=ticks['Symbol'].tolist()
-    st.write(tickers)
+    #st.write(tickers)
     
 
 #if True:
