@@ -339,7 +339,7 @@ keyword=st.text_input(value="Automotive",label="Enter a description of the kinds
 # Base URL for the logos
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 
-default_logo_url=""
+default_logo_url="https://raw.githubusercontent.com/msrinag/CipherStockX/refs/heads/main/Assets/default.jpg"
 
 #if st.button("find stocks"):
 if st.button("finds stocks"):
