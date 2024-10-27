@@ -337,12 +337,13 @@ base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 if st.button("finds stocks"):
     serch_query=llms.eloberateprompt(keyword)
     ticks=vectorbases.find_similar_stocks(serch_query)
-    st.write(ticks['Symbol'].tolist())
+    tickers=ticks['Symbol'].tolist()
+    st.write(tickers)
     
 
-if True:
+#if True:
 # # List of ticker symbols
-    tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]
+    #tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA","NFLX"]
 
 # tickers=find_similar_stocks(keyword)['Symbol'].tolist()
 # print(tickers)
