@@ -23,6 +23,9 @@ from Plotting import plotting
 from Vectorbase import vectorbase
 llms=llm()
 plottings=plotting()
+st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
+st.html("styles.html")
+pio.templates.default = "plotly_white"
 @st.cache_data
 def vector():
     return vectorbase()
@@ -325,9 +328,7 @@ def download_and_analyze(tickers):
     return sec_score    
 
 
-st.set_page_config(page_title="Stocks Dashboard", page_icon="📈", layout="wide")
-st.html("styles.html")
-pio.templates.default = "plotly_white"
+
 
 
 start = dt.datetime(2020, 1, 1)
