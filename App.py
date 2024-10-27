@@ -328,7 +328,7 @@ pio.templates.default = "plotly_white"
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 
-keyword=st.text_input(value="Popular",label="Enter Sector")
+keyword=st.text_input(value="Automotive",label="Enter Sector")
 
 # Base URL for the logos
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
