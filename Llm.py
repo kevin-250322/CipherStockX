@@ -102,9 +102,11 @@ class llm:
     def UrlTextScrape(self,url):
         try:
             response = requests.get(url)
+            
             response.raise_for_status()
             soup = BeautifulSoup(response.content, 'html.parser')
             page_text = soup.get_text(separator=' ', strip=True)
+            print(response,page_text)
             return page_text
 
         except requests.RequestException as e:
@@ -120,6 +122,7 @@ class llm:
             for i in range(0,len(stock.news)):
                 if '/m/' not in stock.news[i]['link']:
                     text = self.UrlTextScrape(stock.news[i]['link'])
+
                     sentiments[tick].append(
                 {
                     'date': stock.news[i]['providerPublishTime'],
