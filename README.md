@@ -13,7 +13,7 @@ Our project is hosted on: [CipherStockX](https://cipherstockx.streamlit.app/)
 If you're experiencing issues, consider trying a more stable version to get a better feel for the app here:  [CipherStockX Stabel](https://cipherstockx-stabel.streamlit.app/)
 
 ## Workflow
-![Workflow Diagram](Assets/workflow.webp)
+![Workflow Diagram](Assets/Workflow.webp)
 
 ## Key Features
 
