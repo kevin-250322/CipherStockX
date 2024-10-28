@@ -493,5 +493,8 @@ st.markdown("""
 All stock data is sourced from the Yahoo Finance API, and all company logos are provided by [Parqet](https://parqet.com/api). Gemini 1.5 Flash 8B has been used for all LLM-generated content. The analysis, statistics, and insights presented are intended to assist users and should be independently verified. Calculations and formulas have not been fully disclosed or validated for credibility at this stage, as the project is still under research. 
 
 **Note:** This is a research project, and all rights to company logos, data, and other proprietary items remain with their original owners.
-""")
+
+During sentiment analysis, we scrape news and financial information from Yahoo News. However, some articles may block our scraping tools (BeautifulSoup and `requests`), limiting content access. Additionally, on Streamlit Cloud, we avoid using Selenium due to its high memory usage and slower performance, which could increase wait times for users.
+
+            """)
 
