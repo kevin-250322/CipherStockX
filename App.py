@@ -31,7 +31,7 @@ def vector():
     return vectorbase()
 vectorbases=vector()
 
-def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, open):
+def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, open,missing=0):
     with st.container(border=True):
         st.html(f'<span class="watchlist_card"></span>')
 
@@ -70,7 +70,8 @@ def display_watchlist_card(ticker, symbol_name, last_price, change,change_pct, o
         with des:
             with st.container():
                 st.write(stock_info[ticker]['longBusinessSummary'][:350]+"...")
-
+        if missing:
+            return
         with br:
             fig_spark = plottings.plot_sparkline(open,'red' if negative_gradient else 'green')
             st.html(f'<span class="watchlist_br"></span>')
@@ -221,7 +222,7 @@ def watch_cards(stock_hist,stock_info,live_data):
                      display_watchlist_card( tickers[i+1], stock_info[tickers[i+1]]['longName'], 
                                live_data[tickers[i+1]]['Close'].iloc[-1], 
                                float((live_data[tickers[i+1]]['Close'].iloc[-1]-0)),
-                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-0)/0), 0)
+                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-0)/0), 0,1)
                 
 
 def filter_symbol_widget():
