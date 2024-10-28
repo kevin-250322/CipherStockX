@@ -80,6 +80,7 @@ class llm:
                     }},
                     ........
                     }}
+                    Note: NO PREAMBEL GIVE GENRIC FOR tickers with no data or empty
                     """
         self.prompt3="""Refine the input '{keyword}' to add context for accurately identifying companies in this sector.
                     Return a precise, single sentence describing the companies or sector relevant to '{keyword}' in a way that enhances search specificity.
