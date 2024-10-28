@@ -121,7 +121,11 @@ class llm:
             sentiments[tick] = []
             for i in range(0,len(stock.news)):
                 if '/m/' not in stock.news[i]['link']:
-                    text = self.UrlTextScrape(stock.news[i]['link'])
+                    text="no data from websire use title"
+                    try:
+                        text = self.UrlTextScrape(stock.news[i]['link'])
+                    except:
+                        pass
 
                     sentiments[tick].append(
                 {
