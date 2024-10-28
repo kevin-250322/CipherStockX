@@ -438,7 +438,10 @@ if st.button("finds stocks"):
 
     st.write("Sentiment Analysis Summary")
     for tick in sentiment_analysis_dict:
-        st.write("- "+sentiment_analysis_dict[tick]['analysis'])
+        try:
+            st.write("- "+sentiment_analysis_dict[tick]['analysis'])
+        except:
+            pass
 
     st.divider()
     st.title('Sec Filling Analysis')
