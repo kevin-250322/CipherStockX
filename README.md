@@ -52,10 +52,16 @@ If you're experiencing issues, consider trying a more stable version to get a be
 - **`plotting.py`**: Contains utility functions for generating various stock visualizations.
 - **`vectorbase.py`**: Provides vector-based search and filtering for relevant stock data.
 
-## Dependencies
-
-- **Python Libraries**: `pandas`, `plotly`, `streamlit`, `yfinance`, `humanize`, `google-generativeai`, `BeautifulSoup`, `sec_cik_mapper`
-- **External API**: Google Generative AI for enhanced sentiment analysis.
+## Tech Stack
+- **Streamlit**: Powers the interactive web interface and dashboard for stock analysis.
+- **Google Generative AI**: Used for sentiment analysis and generating text-based recommendations.
+- **FAISS (faiss-cpu)**: Vector database and search engine to retrieve relevant stocks based on user keywords.
+- **Yahoo Finance (yfinance)**: Provides real-time stock data, historical prices, and financial metrics.
+- **BeautifulSoup**: Scrapes news articles and extracts metadata for sentiment analysis.
+- **Pandas**: Data processing and manipulation library for managing stock data.
+- **Plotly**: Generates interactive stock visualizations, including candlestick charts and performance metrics.
+- **SEC CIK Mapper**: Maps company names to SEC filings for risk and performance analysis.
+- **Humanize**: Formats large numbers and financial figures into readable formats.
 
 ## Future Enhancements
 
