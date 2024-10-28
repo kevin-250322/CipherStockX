@@ -135,6 +135,7 @@ class llm:
     def sentiment_analysis_tick(self,sentiment_analysis):
         response2 = self.model.generate_content(self.prompt2.format(sentiment_analysis=sentiment_analysis))
         Start1,End1=self.find_braces_positions(response2.text)
+        print(response2.text[Start1:End1+1])
         return json.loads(response2.text[Start1:End1+1])#sentiment_analysis_dict
     
     def eloberateprompt(self,keywords):
