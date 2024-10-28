@@ -218,7 +218,11 @@ def watch_cards(stock_hist,stock_info,live_data):
                                float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])),
                                float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])/stock_hist[tickers[i+1]]['Close'].iloc[-2]), stock_hist[tickers[i+1]]['Open'])
                 except:
-                    st.write(tickers,stock_hist,i)
+                     display_watchlist_card( tickers[i+1], stock_info[tickers[i+1]]['longName'], 
+                               live_data[tickers[i+1]]['Close'].iloc[-1], 
+                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-0)),
+                               float((live_data[tickers[i+1]]['Close'].iloc[-1]-0)/0), 0)
+                
 
 def filter_symbol_widget():
     with st.container():
