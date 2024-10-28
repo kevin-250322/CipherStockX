@@ -413,6 +413,7 @@ if st.button("finds stocks"):
     st.title("Sentiment Analysis")
 
     sentiment_analysis=llms.sentiment_data(tickers)
+    st.write(sentiment_analysis)
     sentiment_analysis_dict=llms.sentiment_analysis_tick(sentiment_analysis)
 
     bardata={}
