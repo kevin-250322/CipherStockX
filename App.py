@@ -497,6 +497,6 @@ All stock data is sourced from the Yahoo Finance API, and all company logos are 
 During sentiment analysis, we scrape news and financial information from Yahoo News. However, some articles may block our scraping tools (`BeautifulSoup` and `requests`), limiting content access. Additionally, on Streamlit Cloud, we avoid using Selenium due to its high memory usage and slower performance, which could increase wait times for users.
 
             """)
-st.write("topic ideas")
+st.write("**Topic ideas:**")
 st.image('https://raw.githubusercontent.com/msrinag/CipherStockX/refs/heads/main/Assets/ideas.gif')
 
