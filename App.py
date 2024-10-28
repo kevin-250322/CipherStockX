@@ -427,7 +427,10 @@ if st.button("finds stocks"):
 
     bardata={}
     for ticker, info in sentiment_analysis_dict.items():
-        bardata[ticker] = info["sentiment_score"]
+        try:
+            bardata[ticker] = info["sentiment_score"]
+        except:
+            pass
     
     df = pd.DataFrame(list(bardata.items()), columns=['Company', 'Sentiment Score'])
 
