@@ -15,6 +15,15 @@ If you're experiencing issues, consider trying a more stable version to get a be
 ## Workflow
 ![Workflow Diagram](Assets/Workflow.webp)
 
+## Architecture
+- **User Keywords Input**: Users provide initial keywords related to stocks or sectors of interest.
+- **Gemini API - Expand Keywords**: Gemini API generates additional, relevant keywords, widening the stock search.
+- **Vector Database Search**: Uses expanded keywords to find closely matching stocks in the vector database.
+- **Yahoo Finance API Data Retrieval**: Gathers stock data, news articles, and performance metrics.
+- **Sentiment Analysis & SEC Filings Analysis**: Analyzes news sentiment and SEC filing metrics for each stock.
+- **Dashboard Generation**: Creates visualizations of stock trends, performance, and relevant metrics.
+- **LLM Recommendations**: Provides text-based insights and suggestions based on all analyses.
+
 ## Key Features
 
 ### Stock Analysis and Visualization
