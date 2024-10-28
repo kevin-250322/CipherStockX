@@ -218,7 +218,7 @@ def watch_cards(stock_hist,stock_info,live_data):
                                float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])),
                                float((live_data[tickers[i+1]]['Close'].iloc[-1]-stock_hist[tickers[i+1]]['Close'].iloc[-2])/stock_hist[tickers[i+1]]['Close'].iloc[-2]), stock_hist[tickers[i+1]]['Open'])
                 except:
-                    st.write(stock_hist,i)
+                    st.write(tickers,stock_hist,i)
 
 def filter_symbol_widget():
     with st.container():
