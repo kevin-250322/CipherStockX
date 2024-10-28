@@ -2,6 +2,10 @@
 
 **CipherStockX** is an innovative stock analysis platform designed to decode market trends and insights. Leveraging advanced AI and machine learning models, it empowers users with real-time data, sentiment analysis, and performance scoring to enhance trading decisions. The interactive and sleek web interface, powered by Streamlit, provides a comprehensive view of market metrics, stock performance, and SEC filing analyses.
 
+## Demo
+
+![Demo GIF](Assets/Demo.gif)
+
 ## Key Features
 
 ### Stock Analysis and Visualization
