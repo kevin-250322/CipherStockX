@@ -352,7 +352,7 @@ def download_and_analyze(tickers):
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
 st.title("Automated Stock Analysis")
-keyword=st.text_input(value="Automotive",label="Enter a description of the kinds of stocks you are looking for:")
+keyword=st.text_area(value="Automotive",label="Enter a description of the kinds of stocks you are looking for:")
 
 # Base URL for the logos
 base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
@@ -429,8 +429,8 @@ if st.button("finds stocks"):
 
     st.divider()
     st.title('Sec Filling Analysis')
-
-
+    st.image('https://www.sec.gov/themes/custom/uswds_sec/dist/img/logos/sec-logo-2x.png',width=700)
+    st.write("An SEC filing is a document companies submit to the U.S. SEC to disclose financial and operational details. It’s essential for stock analysis because it provides verified data on a company’s health, risks, and growth potential. Key filings include the 10-K (annual report), 10-Q (quarterly report), and 8-K (major events). These documents help investors assess a company's financial stability, performance trends, and market position.")
 
     # Run the download and analysis for all tickers
     sec_status=download_and_analyze(tickers)
@@ -471,3 +471,11 @@ if st.button("finds stocks"):
                     st.write(str(int(sec_status[ticker]['Risk Factor Score'])))
         st.divider()
         
+st.markdown("""
+**Disclaimer:**
+
+All stock data is sourced from the Yahoo Finance API, and all company logos are provided by [Parqet](https://parqet.com/api). Gemini 1.5 Flash 8B has been used for all LLM-generated content. The analysis, statistics, and insights presented are intended to assist users and should be independently verified. Calculations and formulas have not been fully disclosed or validated for credibility at this stage, as the project is still under research. 
+
+**Note:** This is a research project, and all rights to company logos, data, and other proprietary items remain with their original owners.
+""")
+
