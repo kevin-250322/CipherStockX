@@ -369,7 +369,7 @@ base_logo_url = "https://assets.parqet.com/logos/symbol/{}"
 default_logo_url="https://raw.githubusercontent.com/msrinag/CipherStockX/refs/heads/main/Assets/default.jpg"
 
 #if st.button("find stocks"):
-if st.button("finds stocks"):
+if st.button("find stocks"):
     serch_query=llms.eloberateprompt(keyword)
     ticks=vectorbases.find_similar_stocks(serch_query)
     tickers=ticks['Symbol'].tolist()
@@ -494,7 +494,7 @@ All stock data is sourced from the Yahoo Finance API, and all company logos are 
 
 **Note:** This is a research project, and all rights to company logos, data, and other proprietary items remain with their original owners.
 
-During sentiment analysis, we scrape news and financial information from Yahoo News. However, some articles may block our scraping tools (BeautifulSoup and `requests`), limiting content access. Additionally, on Streamlit Cloud, we avoid using Selenium due to its high memory usage and slower performance, which could increase wait times for users.
+During sentiment analysis, we scrape news and financial information from Yahoo News. However, some articles may block our scraping tools ('BeautifulSoup' and `requests`), limiting content access. Additionally, on Streamlit Cloud, we avoid using Selenium due to its high memory usage and slower performance, which could increase wait times for users.
 
             """)
 
