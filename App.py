@@ -360,7 +360,7 @@ def download_and_analyze(tickers):
 
 start = dt.datetime(2020, 1, 1)
 end = dt.datetime.now()
-st.title("Automated Stock Analysis")
+st.title(">> Kevin Automated Stock Analysis")
 keyword=st.text_area(value="Retial stores",label="Enter a description of the kinds of stocks you are looking for:")
 
 # Base URL for the logos
